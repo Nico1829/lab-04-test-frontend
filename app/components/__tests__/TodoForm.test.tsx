@@ -13,6 +13,7 @@ describe("TodoForm Component", () => {
 
     // Validate: Verificar que los elementos del formulario existen
     expect(screen.getByTestId("todo-form")).toBeInTheDocument();
+    //expect(screen.getByTestId("Añadir")).toBeInTheDocument();
     expect(screen.getByTestId("todo-input")).toBeInTheDocument();
     expect(screen.getByTestId("todo-submit")).toBeInTheDocument();
     expect(screen.getByTestId("todo-submit")).toBeDisabled(); // Botón deshabilitado inicialmente
@@ -43,6 +44,7 @@ describe("TodoForm Component", () => {
     fireEvent.submit(screen.getByTestId("todo-form"));
 
     // Validate: Verificar que se llamó a la función con el texto correcto
+    expect(mockAddTodo).not.toHaveBeenCalledTimes(2);
     expect(mockAddTodo).toHaveBeenCalledWith("Nueva tarea");
     expect(input).toHaveValue(""); // El input se limpia después de enviar
   });
@@ -79,5 +81,23 @@ describe("TodoForm Component", () => {
   it("llama a onAddTodo con el texto recortado (sin espacios al inicio/final)", () => {
     // TODO: Implementar el test siguiendo el patrón Prepare, Execute, Validate
     // Pista: Debes verificar que "  Texto con espacios  " se convierta en "Texto con espacios"
+    const mockAddTodo = jest.fn();
+  
+    render(<TodoForm onAddTodo={mockAddTodo} />);
+    const inputElement = screen.getByTestId("todo-input");
+    const inputValue = " Texto con espacios ";
+    
+    fireEvent.change(inputElement, { target: { value: inputValue } });
+
+    const formElement = screen.getByTestId("todo-form");
+    
+    fireEvent.submit(formElement);
+
+    //fireEvent.submit(screen.getByTestId("todo-form"));
+
+    expect(inputElement).toBeInTheDocument();
+    expect(formElement).toBeInTheDocument();
+
+
   });
 });

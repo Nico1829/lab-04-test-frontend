@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen } from "@testing-library/react";
+import { render, screen, fireEvent } from "@testing-library/react";
 import TodoList, { Todo } from "../TodoList";
 
 describe("TodoList Component", () => {
@@ -57,5 +57,26 @@ describe("TodoList Component", () => {
   it("pasa correctamente las funciones onToggle y onDelete a cada TodoItem", () => {
     // TODO: Implementar el test siguiendo el patrón Prepare, Execute, Validate
     // Pista: Deberás modificar el mock de TodoItem para verificar que recibe las props correctas
+    const todos: Todo[] = [
+      { id: 1, text: "Tarea 1", completed: false },
+      { id: 2, text: "Tarea 2", completed: true },
+    ];
+    
+    const mockToggle = jest.fn();
+    const mockDelete = jest.fn();
+
+    render(
+      <TodoList
+        todos={todos}
+        onToggleTodo={mockToggle}
+        onDeleteTodo={mockDelete}
+      />
+    );
+
+    fireEvent.click(screen.getAllByTestId("todo-checkbox")[0]);
+    fireEvent.click(screen.getAllByTestId("todo-delete-button")[1]);
+
+    expect(mockToggle).toHaveBeenCalledWith(1); 
+    expect(mockDelete).toHaveBeenCalledWith(2); 
   });
 });
